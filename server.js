@@ -118,16 +118,21 @@ app.use((req, res) => {
   return res.status(404).sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+
 app.use((err, _req, res, _next) => {
   const status = err.status || 500;
-  if (status >= 500) {
-    console.error('Server error:', err.message);
-  }
+
+  console.error("Server error:", err);
+
   res.status(status).json({
-    error: status >= 500 ? 'Something went wrong. Please try again.' : err.message
+    error:
+      status >= 500
+        ? "Something went wrong. Please try again."
+        : err.message
   });
 });
 
 app.listen(PORT, () => {
-  console.log(`Christmas roulette listening on http://localhost:${PORT}`);
+  console.log(`Christmas roulette listening on port ${PORT}`);
 });
+
