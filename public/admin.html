@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#07140f" />
+    <title>Organizer dashboard — Christmas Roulette</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="admin.css" />
+  </head>
+  <body class="admin-body">
+    <section class="layout" id="loginView">
+      <div class="card glass admin-login">
+        <p class="eyebrow">Organizer only</p>
+        <h1>Admin dashboard</h1>
+        <p class="lede">Sign in to manage guests, access codes, and the gift roulette.</p>
+        <form id="adminLoginForm">
+          <label for="adminEmail">Email</label>
+          <input id="adminEmail" type="email" autocomplete="username" required />
+          <label for="adminPassword">Password</label>
+          <input id="adminPassword" type="password" autocomplete="current-password" required minlength="12" />
+          <button class="btn btn-gold" type="submit" id="adminLoginBtn">Sign in</button>
+          <p class="form-error" id="adminLoginError" hidden></p>
+        </form>
+      </div>
+    </section>
+
+    <div class="dash hidden" id="dashView">
+      <aside class="sidebar" id="sidebar">
+        <p class="eyebrow">Christmas outing</p>
+        <h2>Organizer</h2>
+        <nav>
+          <button type="button" class="nav-btn is-active" data-panel="overview">Overview</button>
+          <button type="button" class="nav-btn" data-panel="people">Participants</button>
+          <button type="button" class="nav-btn" data-panel="draw">Roulette</button>
+        </nav>
+        <button type="button" class="btn btn-ghost" id="adminLogout">Log out</button>
+      </aside>
+
+      <div class="dash-main">
+        <header class="dash-top">
+          <button type="button" class="menu-btn" id="menuBtn" aria-label="Open menu">☰</button>
+          <h1 id="dashTitle">Overview</h1>
+        </header>
+
+        <section class="panel" id="panel-overview">
+          <div class="stats" id="stats"></div>
+          <div class="card glass">
+            <h2>Event</h2>
+            <form id="eventForm" class="event-form">
+              <label for="eventName">Name</label>
+              <input id="eventName" maxlength="120" required />
+              <label for="eventDate">Date and time</label>
+              <input id="eventDate" type="datetime-local" />
+              <button class="btn btn-gold" type="submit">Save event</button>
+            </form>
+          </div>
+        </section>
+
+        <section class="panel hidden" id="panel-people">
+          <div class="toolbar">
+            <input id="search" type="search" placeholder="Search by name" />
+            <button type="button" class="btn btn-gold" id="addBtn">Add participant</button>
+          </div>
+          <div class="table-wrap card glass">
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Status</th>
+                  <th>Assigned</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="peopleBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="panel hidden" id="panel-draw">
+          <div class="card glass">
+            <h2>Draw status</h2>
+            <p id="drawStatusText" class="lede"></p>
+            <div class="action-row">
+              <button type="button" class="btn btn-gold" id="finalizeBtn">Finalize roulette</button>
+              <button type="button" class="btn btn-danger" id="resetBtn">Reset draw</button>
+            </div>
+            <p class="notice">
+              Finalizing locks the confirmed list and creates one secret recipient per person. Tentative guests are skipped
+              until you mark them confirmed and run the draw again (which requires a reset).
+            </p>
+          </div>
+          <div class="card glass">
+            <div class="toolbar">
+              <h2>Assignment status</h2>
+              <button type="button" class="btn btn-ghost" id="revealBtn">Show pairings</button>
+            </div>
+            <p class="notice">Recipient names stay hidden until you explicitly reveal them.</p>
+            <div id="assignmentList"></div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <dialog class="modal" id="personModal">
+      <form method="dialog" id="personForm" class="card glass">
+        <h2 id="personModalTitle">Add participant</h2>
+        <input type="hidden" id="personId" />
+        <label for="personName">Display name</label>
+        <input id="personName" required maxlength="80" />
+        <label for="personAttendance">Attendance</label>
+        <select id="personAttendance">
+          <option value="confirmed">Confirmed</option>
+          <option value="tentative">Tentative</option>
+          <option value="not_attending">Not attending</option>
+        </select>
+        <div class="action-row">
+          <button class="btn btn-gold" type="button" id="personSave">Save</button>
+          <button class="btn btn-ghost" value="cancel">Cancel</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog class="modal" id="codeModal">
+      <div class="card glass">
+        <h2>Access code</h2>
+        <p>Copy this now. The server only stores a hash, so it will not be shown again.</p>
+        <p class="code-display" id="codeDisplay"></p>
+        <form method="dialog">
+          <button class="btn btn-gold" value="ok">Done</button>
+        </form>
+      </div>
+    </dialog>
+
+    <dialog class="modal" id="confirmModal">
+      <form method="dialog" class="card glass">
+        <h2 id="confirmTitle">Please confirm</h2>
+        <p id="confirmText"></p>
+        <label id="confirmLabel" class="hidden" for="confirmInput">Type RESET DRAW</label>
+        <input id="confirmInput" class="hidden" autocomplete="off" />
+        <div class="action-row">
+          <button class="btn btn-danger" value="yes" id="confirmYes">Confirm</button>
+          <button class="btn btn-ghost" value="no">Cancel</button>
+        </div>
+      </form>
+    </dialog>
+
+    <div class="toast" id="toast" hidden></div>
+    <script src="admin.js"></script>
+  </body>
+</html>

@@ -1,0 +1,26 @@
+{
+  "name": "christmas-roulette",
+  "version": "1.0.0",
+  "description": "Christmas Exchange Gift Roulette — private Secret Santa assignments for a group outing",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "create-admin": "node scripts/create-admin.js",
+    "seed": "node scripts/seed-participants.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "private": true,
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "connect-pg-simple": "^10.0.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "express-rate-limit": "^7.4.1",
+    "express-session": "^1.18.1",
+    "helmet": "^8.0.0",
+    "pg": "^8.13.1"
+  }
+}
